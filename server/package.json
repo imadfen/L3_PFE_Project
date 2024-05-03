@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "nodemon server.ts",
+    "start": "ts-node cli/cli.ts",
+    "server": "nodemon service/server.ts",
+    "cli": "ts-node cli/cli.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,10 +14,14 @@
   "dependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "commander": "^12.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
-    "nodemon": "^3.1.0",
+    "ps-tree": "^1.2.0",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/ps-tree": "^1.1.6"
   }
 }

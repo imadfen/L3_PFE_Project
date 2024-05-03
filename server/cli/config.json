@@ -1,0 +1,5 @@
+{
+  "newTerminalCommand": "konsole --new-tab -e",
+  "killProcessesCommand": "pkill -TERM -P <PID>",
+  "serverStatusCommand": "lsof -p <PID> | grep --color=never LISTEN"
+}

@@ -8,6 +8,8 @@
 <hr/>
 
 ### Installation:
+This application requires having `npm` and `Node.js` on your machine, if you don't have, you can follow this [**npm and node.js installation instructions**](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+
 #### 1. Clone Repository
 First you have to clone the repository using the following command and use your username and access token if you've been asked to:
 

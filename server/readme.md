@@ -20,10 +20,24 @@ PORT=5000
 ```
 
 ### 3. Run the app:
-Use the following command in the current directory to run the server app:
+#### A. Using direct command:
+Use the following command in the current directory to run the server app directly:
+```bash
+npm run server
+```
+
+#### B. Using CLI Tool:
+You can run the server app using within the **CLI Tool** by the command:
 ```bash
 npm start
 ```
+once the CLI Tool is on, we can run the server by:
+```bash
+CLI-Tool> run
+```
+
+> **Note:** the CLI Tool is not tested yet on Windows, and my need some configuration on Unix systems, so it is better to use the direct way for now.
+
 
 ### 4. Test the app:
 You can test the server app by accessing the url http://localhost:5000/hello

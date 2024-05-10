@@ -1,0 +1,26 @@
+import * as ort from "onnxruntime-node";
+import saveSatData from "./saveSatData";
+import { SatMetaData } from "../types/SatMetaData";
+import prepareImage from "./prepareImage";
+import processModelOutput from "./processModelOutput";
+import runModel from "./runModel";
+
+interface ImageType {
+    file_name: string;
+    content: Buffer;
+}
+
+export default async function processImage(image: ImageType, imageMetadata: SatMetaData) {
+    const [input,img_width,img_height] = await prepareImage(image.content);
+
+    const outputData = await runModel(input);
+    const confThreshold = 0.5;
+    const iouThreshold = 0.7;
+    
+    const processedOutput = processModelOutput(outputData, img_width, img_height, confThreshold, iouThreshold);
+    const score = processedOutput[0][5];
+
+    if (processedOutput.length > 0) {
+        await saveSatData(image, imageMetadata, score);
+    }
+}

@@ -2,8 +2,14 @@ import express, { Application } from 'express';
 import cors from "cors";
 import dotenv from "dotenv";
 import http from 'http';
-import { spawn } from 'child_process';
-
+import getSatDataRoute from "./routes/getSatDataRoute";
+import serveImagesRoute from "./routes/serveImagesRoute";
+import { getFires, resetDatabase } from './utils/database';
+import processImage from './utils/processImage';
+import fs from "fs"
+import path from "path"
+import createMetadata from './utils/createSatMetadata';
+import { Polygon, polygon } from '@turf/turf';
 
 let app: Application = express();
 let server: http.Server | null = null;
@@ -21,39 +27,31 @@ if (process.env.PORT) {
 
 // ============ routes ===========
 
+// hello world test route
 app.get('/api/hello', (req, res) => {
     res.send('Hello World!');
 });
 
-// ===============================
+// serve images route
+app.use(serveImagesRoute);
 
+// run the fetching and processing the satellite imagery
+app.use('/api/getsatdata', getSatDataRoute);
+
+// reset the db
+app.get("/api/resetdb", async (_, res) => {
+    await resetDatabase();
+    return res.sendStatus(200)
+})
+
+// get fires from db
+app.use("/api/getfires", async (_, res) => {
+    const fires = await getFires();
+    return res.json(fires)
+})
+
+// ===============================
 
 server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-export function startServerInBackground() {
-    spawn('npm', ['run', 'start'], { detached: true, stdio: 'ignore' }).unref();
-};
-
-export function checkStatus() {
-    if (server && server.listening) {
-        return {
-            port: PORT,
-            pid: process.pid,
-        }
-    }
-
-    return false;
-}
-
-export function stopServer() {
-    if (server) {
-        server.close(() => {
-            console.log('Server has been stopped');
-            process.exit(0);
-        });
-    } else {
-        console.log('Server is not running');
-    }
-};

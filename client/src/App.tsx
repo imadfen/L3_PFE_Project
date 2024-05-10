@@ -10,8 +10,14 @@ function App() {
   ]);
 
   return (
-    <div className="h-screen w-screen bg-red-400">
-      <MapView fireList={fireDetect} />
+    <div className="h-screen w-screen" id="page-container">
+      <div className="">
+        <MapView fireList={fireDetect} />
+      </div>
+
+      <div className="bg-gray-800 text-white p-4">
+        <p>hello world</p>
+      </div>
     </div>
   );
 }

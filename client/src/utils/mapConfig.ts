@@ -18,9 +18,8 @@ const mapConfig: MapContainerProps = {
         lng: 2.87
     },
     maxZoom: 14,
-    minZoom: 8,
+    minZoom: 5,
     zoom: 9,
-    maxBounds: limitBounds,
     layers: [GoogleSat],
     zoomControl: false,
 }

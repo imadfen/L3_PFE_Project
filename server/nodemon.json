@@ -1,0 +1,11 @@
+{
+    "ignore": [
+      "service/data/*",
+      "service/config.json",
+      "cli/config.json"
+    ],
+    "watch": [
+      "**/*"
+    ]
+  }
+  

@@ -6,9 +6,10 @@ import { useEffect, useRef } from "react";
 
 type propsType = {
   markerPosition: LatLng;
+  setSelectedFire: () => any;
 };
 
-export default function EdgeIcon({ markerPosition }: propsType) {
+export default function EdgeIcon({ markerPosition, setSelectedFire }: propsType) {
   const map = useMap();
   const edgeIconRef = useRef<L.Marker | null>(null);
 
@@ -19,6 +20,7 @@ export default function EdgeIcon({ markerPosition }: propsType) {
 
   const handleClick = () => {
     map.flyTo(markerPosition, 13);
+    setSelectedFire();
   };
 
   useEffect(() => {

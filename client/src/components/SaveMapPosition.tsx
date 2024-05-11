@@ -20,10 +20,10 @@ export default function SaveMapPosition() {
     const savedMapState = mapState
       ? JSON.parse(mapState)
       : {
-          lat: 36.38,
-          lng: 2.87,
-          zoom: 9,
-        };
+        lat: 36.38,
+        lng: 2.87,
+        zoom: 9,
+      };
 
     if (savedMapState) {
       map.setView([savedMapState.lat, savedMapState.lng], savedMapState.zoom);

@@ -4,18 +4,21 @@ import SaveMapPosition from "./SaveMapPosition";
 import mapConfig from "../utils/mapConfig";
 import { MapProvider, useMapContext } from "./MapContext";
 import FireMarkers from "./FireMarkers";
+import { Fire } from "../types/Fire";
 
 type propsType = {
-  fireList: number[][];
+  fireList: Fire[];
+  selectedFire: Fire | null;
+  setSelectedFire: (fire: Fire | null) => any;
 };
 
-export default function MapView({ fireList }: propsType) {
+export default function MapView({ fireList, selectedFire, setSelectedFire }: propsType) {
   return (
     <MapProvider>
       <MapContainer className="w-full h-full" {...mapConfig}>
         <SaveMapPosition />
         <MapEvents />
-        <FireMarkers fireList={fireList} />
+        <FireMarkers fireList={fireList} selectedFire={selectedFire} setSelectedFire={setSelectedFire} />
       </MapContainer>
     </MapProvider>
   );

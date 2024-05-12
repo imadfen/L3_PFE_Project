@@ -16,7 +16,8 @@ npm install
 ### 2. Set the environment variables:
 Create a file named `.env` in the current directory. Then need to write in it the variables mentioned here:
 ```env
-PORT=5000
+PORT= 5000
+TOKEN= <YOUR_RANDOM_64_CHARACTERS_STRING>
 ```
 
 ### 3. Run the app:

@@ -1,5 +1,6 @@
 node_modules/
 package-lock.json
 .env
-service/data/images/*.jpeg
-service/data/images/*.png
+service/data/**/*.jpeg
+service/data/**/*.jpg
+service/data/**/*.png

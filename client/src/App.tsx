@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MapView from "./components/MapView";
 import { Fire } from "./types/Fire";
 import SideBar from "./components/SideBar";
 import ImageModal from "./components/ImageModal";
 import LoginFormModal from "./components/LoginFormModal";
 import HistoryModal from "./components/HistoryModal";
+import logout from "./utils/logout";
+import checkLogin from "./utils/checkLogin";
 
 function App() {
   const [selectedFire, setSelectedFire] = useState<Fire | null>(null);
   const [zoomedPictureUrl, setZoomedPictureUrl] = useState<string | null>(null);
   const [isLoginForm, setIsLoginForm] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [fireDetect, _] = useState<Fire[]>([
     {
@@ -45,16 +47,34 @@ function App() {
     }
   ]);
 
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    const result = await checkLogin();
+    setIsLoggedIn(result)
+  }
+
   return (
     <>
       <HistoryModal isOpen={isHistoryOpen} exit={() => setIsHistoryOpen(false)} />
-      <LoginFormModal isOpen={isLoginForm} onClose={() => setIsLoginForm(false)} />
+      <LoginFormModal setLoggedIn={() => setIsLoggedIn(true)} isOpen={isLoginForm} onClose={() => setIsLoginForm(false)} />
       <ImageModal imageUrl={zoomedPictureUrl} exit={() => setZoomedPictureUrl(null)} />
       <div className="h-screen w-screen relative" id="page-container">
 
         <div className="h-screen w-screen z-10 flex">
           <MapView fireList={fireDetect} selectedFire={selectedFire} setSelectedFire={setSelectedFire} />
-          <SideBar fireList={fireDetect} selectedFire={selectedFire} setSelectedFire={setSelectedFire} openImageModal={(url) => setZoomedPictureUrl(url)} openLoginForm={() => setIsLoginForm(true)} isLoggedIn={isLoggedIn} logout={() => setIsLoggedIn(false)} openHistory={()=>setIsHistoryOpen(true)} lastFetch="09/05/2024 11:00:00" />
+          <SideBar fireList={fireDetect} selectedFire={selectedFire} setSelectedFire={setSelectedFire}
+            openImageModal={(url) => setZoomedPictureUrl(url)}
+            openLoginForm={() => setIsLoginForm(true)}
+            isLoggedIn={isLoggedIn}
+            logout={() => {
+              logout();
+              setIsLoggedIn(false)
+            }}
+            openHistory={() => setIsHistoryOpen(true)}
+            lastFetch="09/05/2024 11:00:00" />
         </div>
       </div>
     </>

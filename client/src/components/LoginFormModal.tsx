@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 interface PropsType {
+    setLoggedIn: () => any;
     isOpen: boolean;
     onClose: () => void;
 }
@@ -11,18 +12,43 @@ interface FormInputs {
 }
 
 
-export default function LoginFormModal({ isOpen, onClose }: PropsType) {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<FormInputs>();
+export default function LoginFormModal({ setLoggedIn, isOpen, onClose }: PropsType) {
+    const { register, handleSubmit, reset, setError, formState: { errors } } = useForm<FormInputs>();
 
     const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-    const onSubmit: SubmitHandler<FormInputs> = (data) => {
-        console.log("Email:", data.email, "Password:", data.password);
-        onClose();
-        reset();
+    const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+        const response = await fetch("/api/auth/login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: data.email,
+                    password: data.password,
+                })
+            });
+
+        if (response.status === 200) {
+            const data = await response.json();
+            localStorage.setItem("token", data.token);
+            setLoggedIn();
+            handleClose();
+        } else if (response.status === 401) {
+            setError("email", {
+                type: "manual",
+                message: "Invalid email or password."
+            });
+        } else {
+            setError("email", {
+                type: "manual",
+                message: "Something went wrong."
+            });
+        }
     };
 
-    const handleClose = ()=>{
+    const handleClose = () => {
         onClose();
         reset();
     }

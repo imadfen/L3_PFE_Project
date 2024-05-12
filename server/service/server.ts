@@ -5,17 +5,27 @@ import http from 'http';
 import startFireMonitorRoute from "./routes/startFireMonitorRoute";
 import serveImagesRoute from "./routes/serveImagesRoute";
 import authRoute from "./routes/authRoutes";
-import { createUsersTable, getFires, resetFireTable, resetUsersTable, updateFire } from './utils/database';
+import { getFires, getRecentFires, resetFireTable, updateFire } from './utils/database';
 import processImage from './utils/processImage';
 import fs from "fs"
 import path from "path"
 import createMetadata from './utils/createSatMetadata';
 import { DateTime } from 'luxon';
 import { Polygon, polygon } from '@turf/turf';
+import { Server } from 'socket.io';
+import getLastScanDate from './utils/getLastScanDate';
 
 
 let app: Application = express();
-let server: http.Server | null = null;
+const server = http.createServer(app);
+const io = new Server(server, {
+    path: '/socket.io/',
+    cors: {
+        origin: process.env.CLIENT_URL,
+        methods: ["GET", "POST"],
+    }
+});
+
 dotenv.config();
 
 app.use(cors());
@@ -59,13 +69,11 @@ app.use("/api/getfires", async (_, res) => {
 })
 
 app.get("/api/updatedb", async (_, res) => {
-    // lat=36.69953&lng=3.97774
-    // 36.40553&lng=4.40277
     await updateFire(2, "tl_longitude", 3.97774);
     await updateFire(2, "tl_latitude", 36.69953);
     await updateFire(2, "br_longitude", 4.40277);
     await updateFire(2, "br_latitude", 36.40553);
-    
+
     return res.sendStatus(200);
 });
 
@@ -99,8 +107,28 @@ app.get("/api/bejaiafire", async (_, res) => {
     return res.sendStatus(200);
 })
 
-// ===============================
+// ============ websocket =============
+io.on('connection', async (socket) => {
+    console.log(`A user connected: ${socket.id}`);
 
-server = app.listen(PORT, () => {
+    const fires = await getRecentFires();
+    const lastScanDate = await getLastScanDate();
+
+    socket.emit("today-fires", fires);
+    socket.emit("last-scan-date", lastScanDate);
+
+    socket.on('get-history', async () => {
+        const allFires = await getFires();
+        socket.emit('full-history', allFires);
+    });
+
+    socket.on("disconnect", () => {
+        
+    })
+});
+
+// ==================================
+
+server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

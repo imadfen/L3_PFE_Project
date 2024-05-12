@@ -3,6 +3,7 @@ import { SatMetaData } from "../types/SatMetaData";
 import prepareImage from "./prepareImage";
 import processModelOutput from "./processModelOutput";
 import runModel from "./runModel";
+import updateLastScan from "./updateLastScan";
 
 interface ImageType {
     file_name: string;
@@ -23,4 +24,6 @@ export default async function processImage(image: ImageType, imageMetadata: SatM
         const score = processedOutput[0][5];
         await saveSatData(image, imageMetadata, score);
     }
+
+    await updateLastScan();
 }

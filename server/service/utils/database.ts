@@ -72,7 +72,7 @@ export async function insertFire(newFire: FireWithoutId) {
 // Fetch all fire records
 export async function getFires() {
     const db = await openDb();
-    const fires: Fire = await db.all('SELECT * FROM fires');
+    const fires: Fire[] = await db.all('SELECT * FROM fires');
     await db.close();
     return fires;
 }
@@ -82,7 +82,8 @@ export async function getRecentFires() {
     const db = await openDb();
     const result = await db.get('SELECT datetime FROM fires ORDER BY datetime DESC LIMIT 1');
     if (result) {
-        const fires: Fire[] = await db.all('SELECT * FROM fires WHERE datetime = ?', [result.datetime]);
+        const date = result.datetime.split(" ")[0]
+        const fires: Fire[] = await db.all('SELECT * FROM fires WHERE datetime LIKE ?', [`%${date}%`]);
         await db.close();
         return fires;
     } else {

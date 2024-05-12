@@ -18,6 +18,7 @@ Create a file named `.env` in the current directory. Then need to write in it th
 ```env
 PORT= 5000
 TOKEN= <YOUR_RANDOM_64_CHARACTERS_STRING>
+CLIENT_URL= "http://localhost:5173"
 ```
 
 ### 3. Run the app:

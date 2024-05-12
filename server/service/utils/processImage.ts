@@ -1,4 +1,3 @@
-import * as ort from "onnxruntime-node";
 import saveSatData from "./saveSatData";
 import { SatMetaData } from "../types/SatMetaData";
 import prepareImage from "./prepareImage";
@@ -18,9 +17,10 @@ export default async function processImage(image: ImageType, imageMetadata: SatM
     const iouThreshold = 0.7;
     
     const processedOutput = processModelOutput(outputData, img_width, img_height, confThreshold, iouThreshold);
-    const score = processedOutput[0][5];
 
+    console.log(processedOutput);
     if (processedOutput.length > 0) {
+        const score = processedOutput[0][5];
         await saveSatData(image, imageMetadata, score);
     }
 }

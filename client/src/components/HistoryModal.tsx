@@ -11,20 +11,37 @@ type PropsType = {
 
 export default function HistoryModal({ isOpen, exit }: PropsType) {
     const [fires, setFires] = useState<Fire[]>([]);
+    const [unauthorized, setUnauthorized] = useState(true);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
             getHistory();
+
+            socket.on("full-history", () => {
+                getHistory();
+            })
+        }
+        return () => {
+            socket.off("full-history");
         }
     }, [isOpen]);
 
     const getHistory = async () => {
-        const result = await checkLogin();
-        if (result) {
-            socket.emit("get-history");
-            socket.on("full-history", (data: Fire[]) => {
-                setFires(data);
-            })
+        const response = await fetch("/api/getfires", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            },
+        });
+
+        if (response.status === 200) {
+            const fires: Fire[] = await response.json();
+            setUnauthorized(false);
+            setFires(fires);
+        } else if (response.status === 403) {
+            setUnauthorized(true);
+        } else {
+            setError(true);
         }
     }
 
@@ -42,7 +59,17 @@ export default function HistoryModal({ isOpen, exit }: PropsType) {
 
                 <div>
                     <h2 className="text-5xl font-extrabold">Fire History</h2>
-                    <FireTable fires={fires} />
+                    {error ?
+                        <p className="text-3xl text-red-500 text-center">
+                            Something went wrong
+                        </p>
+                        : unauthorized ?
+                            <p className="text-3xl text-red-500 text-center">
+                                You are not authorized
+                            </p>
+                            :
+                            <FireTable fires={fires} />
+                    }
                 </div>
             </div>
         </div>

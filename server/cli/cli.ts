@@ -5,6 +5,7 @@ import { exitCommand } from './commands/exit';
 import { ChildProcess } from "child_process";
 import { configCommand } from './commands/config';
 import { helpCommand } from './commands/help';
+import { simulationCommand } from './commands/simulation';
 
 
 let nodemonProcess: ChildProcess | null = null;
@@ -49,6 +50,12 @@ const executeCommand = (command: string) => {
 
         case 'help':
             helpCommand(()=>{
+                rl.prompt();
+            })
+            break;
+        
+        case 'simulation':
+            simulationCommand(nodemonProcess, rl, ()=>{
                 rl.prompt();
             })
             break;

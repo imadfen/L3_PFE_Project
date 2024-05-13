@@ -4,6 +4,7 @@ import prepareImage from "./prepareImage";
 import processModelOutput from "./processModelOutput";
 import runModel from "./runModel";
 import updateLastScan from "./updateLastScan";
+import { getIO } from "../socketManager";
 
 interface ImageType {
     file_name: string;
@@ -19,10 +20,15 @@ export default async function processImage(image: ImageType, imageMetadata: SatM
     
     const processedOutput = processModelOutput(outputData, img_width, img_height, confThreshold, iouThreshold);
 
-    console.log(processedOutput);
     if (processedOutput.length > 0) {
         const score = processedOutput[0][5];
-        await saveSatData(image, imageMetadata, score);
+        const savedFire = await saveSatData(image, imageMetadata, score);
+        
+        if (savedFire) {
+            const io = getIO();
+            io.emit("new-fire", savedFire);
+            io.emit("full-history");
+        }
     }
 
     await updateLastScan();

@@ -1,5 +1,5 @@
 import sqlite3 from 'sqlite3';
-import { open, Database } from 'sqlite';
+import { open, Database, ISqlite } from 'sqlite';
 import { Fire } from '../types/Fire';
 import { User } from '../types/User';
 import bcrypt from "bcryptjs";
@@ -62,11 +62,26 @@ export async function insertFire(newFire: FireWithoutId) {
     properties += ")";
     valuesString += ")";
 
-    await db.run(
-        `INSERT INTO fires ${properties} VALUES ${valuesString}`,
-        values
-    );
-    await db.close();
+    let newRowId: number | undefined;
+    try {
+        const result = await db.run(
+            `INSERT INTO fires ${properties} VALUES ${valuesString}`,
+            values
+        );
+
+        newRowId = result.lastID;
+
+        if (newRowId === undefined) {
+            return undefined;
+        }
+
+        const row: Fire | undefined = await db.get(`SELECT * FROM fires WHERE id = ?`, [newRowId]);
+        return row;
+    } catch (error) {
+        console.error('Insert fire operation failed:', error);
+    } finally {
+        await db.close();
+    }
 }
 
 // Fetch all fire records

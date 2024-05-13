@@ -9,14 +9,14 @@ export default function ImageModal({ imageUrl, altText, exit }: PropsType) {
     <>
       {imageUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="relative bg-white rounded-lg p-4 shadow-lg max-w-3xl w-full">
+          <div className="relative bg-white rounded-lg p-4 shadow-lg max-w-3xl max-h-[90%]">
             <button
               onClick={exit}
               className="absolute -top-4 -right-4 bg-gray-200 text-black font-bold px-3 py-2 rounded-full focus:outline-none"
             >
               ✖
             </button>
-            <img src={imageUrl} alt={altText} className="w-full h-auto" />
+            <img src={imageUrl} alt={altText} className="w-full max-h-[85vh] min-h-[85vh]" />
           </div>
         </div>
       )}

@@ -61,13 +61,12 @@ function App() {
     });
 
     socket.on("new-fire", (data: Fire) => {
-      console.log(data);
+      console.log("new fire arrived");
       setFireDetect(prev => [...prev, data]);
-    })
+    });
 
     return () => {
       socket.off('today-fires');
-      socket.off('last-scan-date');
       socket.off('last-scan-date');
       socket.off('new-fire');
     };
@@ -75,7 +74,7 @@ function App() {
 
   const checkAuth = async () => {
     const result = await checkLogin();
-    setIsLoggedIn(result)
+    setIsLoggedIn(result);
   }
 
   return (

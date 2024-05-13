@@ -24,7 +24,7 @@ export default async function saveSatData(image: ImageType, metadata: SatMetaDat
         const fileContent = image.content;
 
         fs.writeFileSync(path.join(imagesFolder, fileName), fileContent);
-        await insertFire({
+        const savedFire = await insertFire({
             datetime: metadata.fetch_date,
             imageFileName: fileName,
             tl_longitude: metadata.area_coords.top_left.longitude,
@@ -34,6 +34,7 @@ export default async function saveSatData(image: ImageType, metadata: SatMetaDat
             fire_score: fireScore,
         })
 
+        return savedFire;
     } catch (e) {
         console.error(`Error saving the files:\n${e}`);
     }

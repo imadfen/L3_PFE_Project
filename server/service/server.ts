@@ -1,30 +1,28 @@
-import express, { Application } from 'express';
+import express, { Application, Request } from 'express';
 import cors from "cors";
 import dotenv from "dotenv";
 import http from 'http';
 import startFireMonitorRoute from "./routes/startFireMonitorRoute";
 import serveImagesRoute from "./routes/serveImagesRoute";
 import authRoute from "./routes/authRoutes";
-import { getFires, getRecentFires, resetFireTable, updateFire } from './utils/database';
+import { deleteFire, getFires, getRecentFires, resetFireTable, updateFire } from './utils/database';
 import processImage from './utils/processImage';
 import fs from "fs"
 import path from "path"
 import createMetadata from './utils/createSatMetadata';
 import { DateTime } from 'luxon';
 import { Polygon, polygon } from '@turf/turf';
-import { Server } from 'socket.io';
 import getLastScanDate from './utils/getLastScanDate';
+import "./utils/schedular";
+import runSimulation from './utils/runSimulation';
+import { getIO, initSocket } from './socketManager';
+import { verifyToken } from './middlewares/authMiddleware';
 
 
 let app: Application = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-    path: '/socket.io/',
-    cors: {
-        origin: process.env.CLIENT_URL,
-        methods: ["GET", "POST"],
-    }
-});
+initSocket(server);
+const io = getIO();
 
 dotenv.config();
 
@@ -51,66 +49,44 @@ app.get('/api/hello', (req, res) => {
 app.use(serveImagesRoute);
 
 // run the fetching and processing the satellite imagery
-app.use('/api/getsatdata', startFireMonitorRoute);
+app.use('/api/startscan', startFireMonitorRoute);
 
 // auth routes
 app.use("/api/auth", authRoute)
 
 // reset the db
 app.get("/api/resetdb", async (_, res) => {
-    await resetFireTable();
+    // await resetFireTable();
+    const fires = await getRecentFires();
+    for (const fire of fires) {
+        await deleteFire(fire.id);
+    }
     return res.sendStatus(200)
 })
 
 // get fires from db
-app.use("/api/getfires", async (_, res) => {
+app.use("/api/getfires", verifyToken, async (_, res) => {
     const fires = await getFires();
     return res.json(fires)
 })
 
-app.get("/api/updatedb", async (_, res) => {
-    await updateFire(2, "tl_longitude", 3.97774);
-    await updateFire(2, "tl_latitude", 36.69953);
-    await updateFire(2, "br_longitude", 4.40277);
-    await updateFire(2, "br_latitude", 36.40553);
+type QueryParams = {id?: string}
+app.get("/api/runsimulation", async (req: Request<{}, {}, {}, QueryParams>, res) => {
+    const id = req.query.id ? parseInt(req.query.id, 10) : undefined;
 
-    return res.sendStatus(200);
-});
+    if (id !== undefined && isNaN(id)) {
+        return res.status(400).json({
+            message: 'Invalid query parameter. Please provide a valid integer for id.'
+        });
+    }
 
-app.get("/api/bejaiafire", async (_, res) => {
-    const fileName = "bejaia2";
-    const extension = ".jpg";
-    const fileBuffer: Buffer = fs.readFileSync(path.join("service", "data", fileName + extension))
-    const currentDateTimeString = DateTime.local().setZone("Africa/Algiers").toFormat('yyyyMMddHHmmss');
-
-    const image = {
-        file_name: currentDateTimeString + extension,
-        content: fileBuffer,
-    };
-
-    const coordinates = [
-        [
-            [36.57005, 4.20502],
-            [36.57005, 4.5607],
-            [36.31208, 4.5607],
-            [36.31208, 4.20502],
-            [36.57005, 4.20502],
-        ]
-    ];
-
-    const cell: Polygon = polygon(coordinates).geometry;
-
-    const imageMetadata = createMetadata(`${currentDateTimeString}.png`, cell)
-
-    await processImage(image, imageMetadata)
-
+    await runSimulation(id);
     return res.sendStatus(200);
 })
 
+
 // ============ websocket =============
 io.on('connection', async (socket) => {
-    console.log(`A user connected: ${socket.id}`);
-
     const fires = await getRecentFires();
     const lastScanDate = await getLastScanDate();
 
@@ -121,10 +97,6 @@ io.on('connection', async (socket) => {
         const allFires = await getFires();
         socket.emit('full-history', allFires);
     });
-
-    socket.on("disconnect", () => {
-        
-    })
 });
 
 // ==================================

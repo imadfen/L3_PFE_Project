@@ -1,5 +1,5 @@
 import sqlite3 from 'sqlite3';
-import { open, Database, ISqlite } from 'sqlite';
+import { open, Database } from 'sqlite';
 import { Fire } from '../types/Fire';
 import { User } from '../types/User';
 import bcrypt from "bcryptjs";

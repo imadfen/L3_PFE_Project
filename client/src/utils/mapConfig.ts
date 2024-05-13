@@ -8,9 +8,9 @@ const GoogleSat = L.tileLayer(
     }
 );
 
-const limitBoundCorner1 = L.latLng(37.22, -2.38);
-const limitBoundCorner2 = L.latLng(34.08, 8.82);
-const limitBounds = L.latLngBounds(limitBoundCorner1, limitBoundCorner2);
+// const limitBoundCorner1 = L.latLng(37.22, -2.38);
+// const limitBoundCorner2 = L.latLng(34.08, 8.82);
+// const limitBounds = L.latLngBounds(limitBoundCorner1, limitBoundCorner2);
 
 const mapConfig: MapContainerProps = {
     center: {

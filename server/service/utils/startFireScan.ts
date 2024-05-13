@@ -20,7 +20,10 @@ export default async function startFireScan() {
     const timeRange = getSatImageTimeRange();
 
     // get bounding boxes
-    const { northAlgeriaCoords, fullAlgeriaCoords } = config;
+    const {
+        northAlgeriaCoords, 
+        // fullAlgeriaCoords
+    } = config;
 
     // dividing map into grid cells
     // const gridCells = getGridCells(fullAlgeriaCoords)    // use the full Algeria areas

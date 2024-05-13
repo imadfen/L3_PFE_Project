@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import FireTable from "./FireTable";
 import socket from "../utils/socket";
-import checkLogin from "../utils/checkLogin";
 import { Fire } from "../types/Fire";
 
 type PropsType = {

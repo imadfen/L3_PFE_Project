@@ -5,13 +5,7 @@ import http from 'http';
 import startFireMonitorRoute from "./routes/startFireMonitorRoute";
 import serveImagesRoute from "./routes/serveImagesRoute";
 import authRoute from "./routes/authRoutes";
-import { deleteFire, getFires, getRecentFires, resetFireTable, updateFire } from './utils/database';
-import processImage from './utils/processImage';
-import fs from "fs"
-import path from "path"
-import createMetadata from './utils/createSatMetadata';
-import { DateTime } from 'luxon';
-import { Polygon, polygon } from '@turf/turf';
+import { deleteFire, getFires, getRecentFires } from './utils/database';
 import getLastScanDate from './utils/getLastScanDate';
 import "./utils/schedular";
 import runSimulation from './utils/runSimulation';

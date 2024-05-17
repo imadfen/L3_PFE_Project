@@ -1,8 +1,7 @@
 {
     "ignore": [
       "service/data/*",
-      "service/config.json",
-      "cli/config.json"
+      "service/geoConfig.json"
     ],
     "watch": [
       "**/*"

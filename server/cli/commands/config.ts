@@ -15,7 +15,7 @@ export async function configCommand(commandArgs: string, cb: ()=>any) {
         }
         
         for (let key in config) {
-            console.log(`${key}:\t"${config[key]}"`);
+            console.log(`${key}:\t\t"${config[key]}"`);
         }
     } else {
         const property = matches[2];

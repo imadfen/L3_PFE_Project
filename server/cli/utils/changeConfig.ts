@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-export default async function changeConfig(propertyName: string, value: string, configFilePath = "./cli/config.json"){
+export default async function changeConfig(propertyName: string, value: string, configFilePath = "./appConfig.json"){
     const configData = await JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
 
     try {

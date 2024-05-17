@@ -2,7 +2,8 @@ import express from "express";
 import getSentinelHubToken from "../utils/getSentinelHubToken"
 import getSatImageTimeRange from "../utils/getSatImageTimeRange";
 import fs from "fs";
-import { Config } from "../types/Config";
+import { GeoConfig } from "../types/GeoConfig";
+import { AppConfig } from "../types/AppConfig";
 import getGridCells from "../utils/getGridCells";
 import fetchAndProcessSatImages from "../utils/fetchAndProcessSatImages";
 
@@ -10,12 +11,14 @@ const router = express.Router();
 
 router.get('/', async (_, res) => {
     // get config file
-    const configJson = fs.readFileSync("./service/config.json", 'utf8');
-    const config: Config = await JSON.parse(configJson);
+    const geoConfigJson = fs.readFileSync("./service/geoConfig.json", 'utf8');
+    const appConfigJson = fs.readFileSync("./appConfig.json", 'utf8');
+    const geoConfig: GeoConfig = await JSON.parse(geoConfigJson);
+    const appConfig: AppConfig = await JSON.parse(appConfigJson);
 
     // client credentials
-    const clientId: string = config.sentinelHubClientId;
-    const clientSecret: string = config.sentinelHubClientSecret;
+    const clientId: string = appConfig.sentinelHubClientId;
+    const clientSecret: string = appConfig.sentinelHubClientSecret;
 
     // get token
     let accessToken: string = await getSentinelHubToken(clientId, clientSecret);
@@ -27,7 +30,7 @@ router.get('/', async (_, res) => {
     const {
         northAlgeriaCoords,
         // fullAlgeriaCoords
-    } = config;
+    } = geoConfig;
 
     // dividing map into grid cells
     // const gridCells = getGridCells(fullAlgeriaCoords)    // use the full Algeria areas

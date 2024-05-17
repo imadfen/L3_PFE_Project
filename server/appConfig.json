@@ -1,0 +1,9 @@
+{
+    "sentinelHubClientId": "e8ee7061-bc40-4962-bb32-d32e59024153",
+    "sentinelHubClientSecret": "JVuw89pFyIrNCTtHiyQQJmTWDzOlxJS6",
+    "lastScanDate": "2024-05-13 10:02:48",
+    "scanDurationHours": "6",
+    "newTerminalCommand": "konsole --new-tab -e",
+    "killProcessesCommand": "pkill -TERM -P <PID>",
+    "serverStatusCommand": "lsof -p <PID> | grep --color=never LISTEN"
+}

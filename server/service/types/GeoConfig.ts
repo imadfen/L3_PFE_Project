@@ -1,7 +1,4 @@
-export type Config = {
-    sentinelHubClientId: string;
-    sentinelHubClientSecret: string;
-    lastScanDate: string;
+export type GeoConfig = {
     algeriaBbox: [number, number, number, number];
     northAlgeriaCoords: [[number, number]];
     fullAlgeriaCoords: [[number, number]];

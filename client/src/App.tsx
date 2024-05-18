@@ -8,6 +8,7 @@ import HistoryModal from "./components/HistoryModal";
 import logout from "./utils/logout";
 import checkLogin from "./utils/checkLogin";
 import socket from "./utils/socket";
+import SnackBar from "./components/SnackBar";
 
 function App() {
   const [selectedFire, setSelectedFire] = useState<Fire | null>(null);
@@ -16,6 +17,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [lastScanDate, setLastScanDate] = useState<string | undefined>(undefined);
+  const [isSnackBar, setIsSnackBar] = useState(false);
   const [fireDetect, setFireDetect] = useState<Fire[]>([
     // {
     //   "id": 2,
@@ -55,13 +57,13 @@ function App() {
     socket.on('today-fires', (data: Fire[]) => {
       setFireDetect(data);
     });
-    
+
     socket.on('last-scan-date', (data: string) => {
       setLastScanDate(data);
     });
 
     socket.on("new-fire", (data: Fire) => {
-      console.log("new fire arrived");
+      setIsSnackBar(true);
       setFireDetect(prev => [...prev, data]);
     });
 
@@ -81,6 +83,7 @@ function App() {
     <>
       <HistoryModal isOpen={isHistoryOpen} exit={() => setIsHistoryOpen(false)} />
       <LoginFormModal setLoggedIn={() => setIsLoggedIn(true)} isOpen={isLoginForm} onClose={() => setIsLoginForm(false)} />
+      <SnackBar isOpen={isSnackBar} onClose={() => setIsSnackBar(false)} />
       <ImageModal imageUrl={zoomedPictureUrl} exit={() => setZoomedPictureUrl(null)} />
       <div className="h-screen w-screen relative" id="page-container">
 

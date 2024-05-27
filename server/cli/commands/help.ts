@@ -9,6 +9,7 @@ export function helpCommand(cb: () => any) {
         "stop": "Closing all connections and terminating the server process.",
         "config": "Manages configuration settings.\n\t\t--ls, --list:\tDisplay configuration values.\n\t\t--set <property> <value>:\tSet configuration property.",
         "exit": "Stops the server and exits the program.",
+        "simulation": "Trigger certain simulations on the server to simulate real wildfire detection situation.",
         "help": "Displays help message for all commands."
     }
 

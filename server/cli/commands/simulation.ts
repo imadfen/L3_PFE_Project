@@ -11,10 +11,15 @@ function mapChoices(simulations: Simulation[]) {
     return [{
         name: "All",
         value: 0
-    }].concat(simulations.map(sim => ({
-        name: sim.name,
-        value: sim.id
-    })));
+    }]
+        .concat(simulations.map(sim => ({
+            name: sim.name,
+            value: sim.id
+        })))
+        .concat({
+            name: "Cancel simulation",
+            value: simulations.length + 1
+        });
 }
 
 async function askQuestion(data: Simulation[], rl: readline.Interface, onFinish: () => any) {
@@ -25,7 +30,10 @@ async function askQuestion(data: Simulation[], rl: readline.Interface, onFinish:
 
     rl.question('Choose a simulation (enter number): ', async (choice) => {
         const id = parseInt(choice);
-        if (isNaN(id) || !data.find(sim => sim.id === id)) {
+        if (id == data.length + 1) {
+            console.log('Simulation canceled.');
+            onFinish();
+        } else if (isNaN(id) || !data.find(sim => sim.id === id)) {
             console.log('Invalid choice.');
             onFinish();
         } else {

@@ -4,16 +4,16 @@ import { AppConfig } from "../types/AppConfig";
 import { getIO } from "../socketManager";
 
 export default async function updateLastScan() {
-    const configJsonPath = path.join("appConfig.json");
+    const lastScanDateJsonPath = path.join("lastScanDate.json");
     
-    const configJson = fs.readFileSync(configJsonPath, "utf-8");
-    const configData: AppConfig = await JSON.parse(configJson);
+    const lastScanDateJson = fs.readFileSync(lastScanDateJsonPath, "utf-8");
+    const lastScanDateData: AppConfig = await JSON.parse(lastScanDateJson);
 
-    configData.lastScanDate = new Date().toISOString().replace('T', ' ').split('.')[0]
+    lastScanDateData.lastScanDate = new Date().toISOString().replace('T', ' ').split('.')[0]
 
-    const updatedJson = JSON.stringify(configData, null, 2);
-    fs.writeFileSync(configJsonPath, updatedJson, 'utf-8');
+    const updatedJson = JSON.stringify(lastScanDateData, null, 2);
+    fs.writeFileSync(lastScanDateJsonPath, updatedJson, 'utf-8');
 
     const io = getIO();
-    io.emit("last-scan-date", configData.lastScanDate);
+    io.emit("last-scan-date", lastScanDateData.lastScanDate);
 }

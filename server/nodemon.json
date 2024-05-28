@@ -1,7 +1,8 @@
 {
     "ignore": [
       "service/data/*",
-      "service/geoConfig.json"
+      "service/geoConfig.json",
+      "lastScanDate.json"
     ],
     "watch": [
       "**/*"

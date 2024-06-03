@@ -1,0 +1,25 @@
+Coordinates shape:
+-----------------
+
+[
+	[
+		bottom-left lat,
+		bottom-left lng,
+	],
+	[
+		top-left lat,
+		top-left lng
+	],
+	[
+		top-right lat,
+		top-right lng
+	],
+	[
+		bottom-right lat,
+		bottom-right lng
+	],
+	[
+		bottom-left lat,
+		bottom-left lng
+	]
+]

@@ -24,6 +24,7 @@ export default async function runSimulation(id?: number) {
     }
 
     for (const sim of simulations) {
+        try{
         console.log(`Running simulation ${sim.name}...`);
 
         const fileName = sim.image_name;
@@ -43,6 +44,8 @@ export default async function runSimulation(id?: number) {
         const imageMetadata = createMetadata(image.file_name, cell)
 
         await processImage(image, imageMetadata)
+        } catch (e: any) {
+            console.log(`Error: ${e.message}`);
+        }
     }
-
 }

@@ -74,7 +74,7 @@ app.get("/api/runsimulation", async (req: Request<{}, {}, {}, QueryParams>, res)
         });
     }
 
-    await runSimulation(id);
+    runSimulation(id);
     return res.sendStatus(200);
 })
 
